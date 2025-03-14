@@ -1,0 +1,10 @@
+~SDK/workdir/target/*
+~SDK/workdir/workdir/*
+~SDK/~mvn/*
+bin/*
+lib0/*
+workdir/*
+data/data/*
+
+
+/bin/

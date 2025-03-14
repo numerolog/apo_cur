@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-autoconfigure-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-devtools-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-starter-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-starter-json-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-starter-logging-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-starter-tomcat-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-boot-starter-web-3.4.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/tomcat-embed-websocket-10.1.36.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/tomcat-embed-el-10.1.36.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/tomcat-embed-core-10.1.36.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-aop-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-beans-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-context-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-core-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-expression-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-jcl-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-web-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/spring-webmvc-6.2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/micrometer-observation-1.14.4.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/micrometer-commons-1.14.4.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/bcprov-jdk18on-1.80.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/logback-classic-1.5.16.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/logback-core-1.5.16.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/log4j-to-slf4j-2.24.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/log4j-api-2.24.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-module-parameter-names-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-datatype-jsr310-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-datatype-jdk8-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-databind-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-core-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jackson-annotations-2.18.2.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/snakeyaml-2.3.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jul-to-slf4j-2.0.16.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/slf4j-api-2.0.16.jar"/>
+	<classpathentry kind="lib" path="/home/old_disk/old_developer/apoibas/apoibas_lr2/lib0/jakarta.annotation-api-2.1.1.jar"/>
+	<classpathentry kind="output" path="~SDK/workdir/target/classes"/>
+</classpath>
