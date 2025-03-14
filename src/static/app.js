@@ -38,6 +38,7 @@ async function sign(data, key)
 {
     var encrypt = new JSEncrypt();
     encrypt.setPrivateKey(key);
+	console.log('sdata[0]=' + data[0]);
     return encrypt.sign(data, CryptoJS.SHA256, 'sha256');
 }
 
@@ -45,26 +46,84 @@ async function verify(message, signature, key)
 {
     var encrypt = new JSEncrypt();
     encrypt.setPublicKey(key);
+	console.log('message[0]=' + message[0]);
     return encrypt.verify(message, signature, CryptoJS.SHA256);
 }
 
-function base64ToHex(base64) 
+function arrayBufferToHex(buffer) 
 {
-	var binaryString = atob(base64);
-	var bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) 
-    {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
+    var byteArray = new Uint8Array(buffer);
     let hexString = '';
-    bytes.forEach(byte => 
-    {
-        const hex = byte.toString(16).padStart(2, '0');
+
+    for (let i = 0; i < byteArray.length; i++) 
+	{
+        var hex = byteArray[i].toString(16).padStart(2, '0');
         hexString += hex;
-    });
+    }
+
     return hexString;
 }
+function hexToArrayBuffer(hex) 
+{
+    hex = hex.replace(/\s+/g, '').toUpperCase();
+    
+    var buffer = new ArrayBuffer(hex.length / 2);
+    var byteArray = new Uint8Array(buffer);
 
+    for (let i = 0; i < hex.length; i += 2)
+        byteArray[i / 2] = parseInt(hex.substr(i, 2), 16);
+
+    return buffer;
+}
+
+
+function hexToString(hex) 
+{
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2) 
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
+function stringToHex(str) 
+{
+    let hex = '';
+    for (let i = 0; i < str.length; i++)
+        hex += str.charCodeAt(i).toString(16).padStart(2, '0');
+    return hex;
+}
+
+var JsonFormatter = {
+  stringify: function(cipherParams) {
+    // create json object with ciphertext
+    var jsonObj = { ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64) };
+    // optionally add iv or salt
+    if (cipherParams.iv) {
+      jsonObj.iv = cipherParams.iv.toString();
+    }
+    if (cipherParams.salt) {
+      jsonObj.s = cipherParams.salt.toString();
+    }
+    // stringify json object
+    return JSON.stringify(jsonObj);
+  },
+  parse: function(jsonStr) {
+    // parse json string
+    var jsonObj = JSON.parse(jsonStr);
+    // extract ciphertext from json object, and create cipher params object
+    var cipherParams = CryptoJS.lib.CipherParams.create({
+      ciphertext: CryptoJS.enc.Base64.parse(jsonObj.ct)
+    });
+    // optionally extract iv or salt
+    if (jsonObj.iv) {
+      cipherParams.iv = CryptoJS.enc.Hex.parse(jsonObj.iv);
+    }
+    if (jsonObj.s) {
+      cipherParams.salt = CryptoJS.enc.Hex.parse(jsonObj.s);
+    }
+    return cipherParams;
+  }
+};
 
 function sc1(text, dur)
 {
@@ -126,15 +185,14 @@ function sc1load()
 			var file = fileInput.files[0];
 			var keyFile = keyInput.files[0];
 
-			var data = new TextDecoder().decode(await file.arrayBuffer());
+			var data = arrayBufferToHex/*new TextDecoder().decode*/(await file.arrayBuffer());
 			var keyArrayBuffer = new TextDecoder().decode(await keyFile.arrayBuffer());
 
 			sc1("Подпись...");
-			var signData = await sign(data, keyArrayBuffer);
-			var signHash = SC1_SIGN_HASH = await sha256(new Uint8Array(signData));
-
+			var signData = SC1_SIGN_HASH = await sign(data, keyArrayBuffer);
+			
 			sc1("Подписано!", 10);
-			$('#sc1Sign').text(signHash);
+			//$('#sc1Sign').text(signData);
 		});
 		
 		$('#sc1EncryptFormButton').click(async () => 
@@ -152,24 +210,40 @@ function sc1load()
 			var file = fileInput.files[0];
 			var keyFile = keyInput.files[0];
 
-			var data = new TextDecoder().decode(await file.arrayBuffer());
+			//var data = new TextDecoder().decode(await file.arrayBuffer());
 			var keyArrayBuffer = new TextDecoder().decode(await keyFile.arrayBuffer());
 
+			//console.log('data='+data.substring(0, 90));
 			sc1("Шифрование AES...");
 			var { key, iv } = generate_random_key_and_iv(16);
-			var assCrypted = atob(CryptoJS.AES.encrypt(data, CryptoJS.enc.Hex.parse(key), 
+			key = CryptoJS.enc.Hex.parse(key);
+
+			console.log('key='+key);
+			//var dataIn = stringToHex(data);
+			var dataIn = arrayBufferToHex(await file.arrayBuffer());
+			console.log('dataIn='+dataIn.substring(0, 90));
+						
+			var assCrypted = CryptoJS.AES.encrypt(dataIn, 'assKey', {
+			  format: JsonFormatter
+			}).toString();
+			
+			/*
+			var assCrypted = CryptoJS.AES.encrypt(dataIn, CryptoJS.enc.Hex.parse(key), 
 			{
 			    iv: CryptoJS.enc.Hex.parse(iv),
 			    mode: CryptoJS.mode.CBC,
 			    padding: CryptoJS.pad.Pkcs7
-			}).toString());
-			
+			}).toString();*/
+
+			console.log(assCrypted);
+			console.log('assCrypted.len='+assCrypted.length);
+			console.log('assCrypted='+assCrypted.substring(0, 90));
 			var ivHex = CryptoJS.enc.Hex.parse(iv);
 
 			sc1("Шифрование RSA...");
 			var encryptedAssKey = await encryptRSA(key, keyArrayBuffer);
 			//var encryptedAssKeyHex = CryptoJS.enc.Hex.parse(encryptedAssKey);
-
+			console.log('encryptedAssKey='+encryptedAssKey);
 			var encrypted = SC1_ENCRYPTED = encryptedAssKey+'\n'+ivHex+'\n'+assCrypted;
 			
 			sc1("Зашифровано!", 10);
@@ -219,13 +293,13 @@ function sc2load()
 			var parts = data.split('\n');
 			var encryptedAssKey = parts[0];
 			var ivHex = parts[1];
-			var assCrypted = parts[2];
+			var assCrypted = data.substring(encryptedAssKey.length+1+ivHex.length+1);// parts[2];
 
 			console.log(ivHex);
 			
 			var iv = CryptoJS.enc.Utf8.parse(ivHex);
 
-			console.log(encryptedAssKey);
+			console.log('encryptedAssKey='+encryptedAssKey);
 			console.log(iv);
 
 			sc1("Дешифрование RSA...");
@@ -233,21 +307,34 @@ function sc2load()
 
 			console.log('assKey='+assKey);
 			sc1("Дешифрование AES...");
-			
-			var decrypted = CryptoJS.AES.decrypt(assCrypted, assKey, {
+
+			console.log('assCrypted.len='+assCrypted.length);
+			console.log('assCrypted='+assCrypted.substring(0,90));
+			//assCrypted = JSON.parse(assCrypted);
+			console.log(assCrypted);
+			var decrypted = CryptoJS.AES.decrypt(assCrypted, 'assKey'/*, {
 			    iv: iv,
 			    mode: CryptoJS.mode.CBC,
 			    padding: CryptoJS.pad.Pkcs7
-			});
+			}*/			, {
+						  format: JsonFormatter
+						}).toString(CryptoJS.enc.Utf8);
 
-			var decryptedData = SC1_DECRYPTED = decrypted;
-
+			console.log('decrypted=='+decrypted);
+			//decrypted = new TextDecoder().decode(hexToArrayBuffer(decrypted));
+		
+			//console.log(decrypted.substring(0,90));
+			console.log(decrypted);
+			//decrypted = decrypted.toString();
+			console.log('dataOut='+decrypted.substring(0,90));
+			var decryptedData = SC1_DECRYPTED = decrypted;//CryptoJS.enc.Utf8.parse(decrypted);
+			console.log('dataOut='+SC1_DECRYPTED.substring(0,90));
 			sc1("Дешифровано!", 10);
 		});
 
 		$('#sc1VerifyFormButton').click(async () => 
 		{
-			var fileInput = $('#sc1File')[0];
+			var fileInput = $('#sc1SignFile')[0];
 			var keyInput = $('#sc1PubKey')[0];
 
 			if (fileInput.files.length === 0 || keyInput.files.length === 0) 
@@ -260,11 +347,11 @@ function sc2load()
 			var file = fileInput.files[0];
 			var keyFile = keyInput.files[0];
 
-			var data = new TextDecoder().decode(await file.arrayBuffer());
+			var sign = new TextDecoder().decode(await file.arrayBuffer());
 			var keyArrayBuffer = new TextDecoder().decode(await keyFile.arrayBuffer());
-
+console.log('sign='+sign);
 			sc1("Проверка подписи...");
-			if (await verify(SC1_DECRYPTED, keyArrayBuffer))
+			if (await verify(SC1_DECRYPTED, sign, keyArrayBuffer))
 			{
 				sc1("Подпись совпала!", 10);
 			}
@@ -276,13 +363,13 @@ function sc2load()
 		
 		$('#sc1DownloadFormButton').click(async () => 
 		{
-			if (SC1_SIGN_HASH === undefined || SC1_ENCRYPTED === undefined) 
+			if (SC1_DECRYPTED === undefined) 
 			{
 				sc1("Не выполнены предыдущие пункты");
 			    return;
 			}
-			download_file('ПОДПИСЬ.txt', SC1_SIGN_HASH);
-			download_file('ШИФРОВАННЫЕ_ДАННЫЕ.bin', SC1_ENCRYPTED);
+			var data = hexToArrayBuffer(SC1_DECRYPTED);
+			download_file('ДЕШИФРОВАННЫЕ_ДАННЫЕ', data);
 			sc1("Файлы скачаны", 10);
 		});
 		
